@@ -49,9 +49,9 @@ fn p1(lines: InputLines) {
         let words: Vec<&str> = rline.split_whitespace().skip(2).collect();
         let mut possible = true;
 
-        for i in (0..words.len()).step_by(2) {
-            let n = words[i].parse::<i32>().unwrap();
-            let color = words[i + 1].chars().next().unwrap();
+        for j in (0..words.len()).step_by(2) {
+            let n = words[j].parse::<i32>().unwrap();
+            let color = words[j + 1].chars().next().unwrap();
 
             match color {
                 'r' => {
