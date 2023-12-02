@@ -1,3 +1,4 @@
+#![allow(dead_code, unused_imports)]
 mod util;
 
 mod d01;
@@ -7,6 +8,9 @@ mod d02;
 use d02::d02;
 
 fn main() {
-    // d01();
+    println!("Day 1:");
+    d01();
+
+    println!("\nDay 2:");
     d02();
 }
