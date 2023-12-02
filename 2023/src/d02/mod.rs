@@ -25,15 +25,9 @@ fn p2(lines: InputLines) {
             let color = words[i + 1].chars().next().unwrap();
 
             match color {
-                'r' => {
-                    max_r = max(n, max_r);
-                }
-                'g' => {
-                    max_g = max(n, max_g);
-                }
-                'b' => {
-                    max_b = max(n, max_b);
-                }
+                'r' => max_r = max(n, max_r),
+                'g' => max_g = max(n, max_g),
+                'b' => max_b = max(n, max_b),
                 _ => panic!("Color not in {{r, g, b}}"),
             }
         }
