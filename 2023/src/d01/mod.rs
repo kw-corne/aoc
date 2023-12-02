@@ -8,25 +8,17 @@ use crate::util::read_lines;
 
 type InputLines = Lines<BufReader<File>>;
 
-fn get_first_num(s: &str) -> Option<char> {
-    if let Some(n) = s.chars().find(|c| c.is_numeric()) {
-        return Some(n);
-    }
-
-    None
-}
-
-fn get_last_num(s: &str) -> Option<char> {
-    if let Some(n) = s.chars().rev().find(|c| c.is_numeric()) {
-        return Some(n);
-    }
-
-    None
-}
-
 fn num_from_line(line: &str) -> i32 {
-    let first_num = get_first_num(&line).expect("Couldnt find first num");
-    let last_num = get_last_num(&line).expect("Couldnt find last num");
+    let first_num = line
+        .chars()
+        .find(|c| c.is_numeric())
+        .expect("Couldnt find first num");
+
+    let last_num = line
+        .chars()
+        .rev()
+        .find(|c| c.is_numeric())
+        .expect("Couldnt find last num");
 
     format!("{}{}", first_num, last_num)
         .parse::<i32>()
