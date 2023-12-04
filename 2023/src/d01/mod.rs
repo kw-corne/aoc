@@ -4,9 +4,7 @@ use std::{
     path::Path,
 };
 
-use crate::util::read_lines;
-
-type InputLines = Lines<BufReader<File>>;
+use crate::util::{read_lines, InputLines};
 
 fn num_from_line(line: &str) -> i32 {
     let first_num = line
