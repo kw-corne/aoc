@@ -9,3 +9,8 @@ pub fn read_lines(p: &Path) -> Result<InputLines> {
     let file = File::open(p)?;
     Ok(BufReader::new(file).lines())
 }
+
+pub fn get_lines(p: &Path) -> Vec<String> {
+    let file = File::open(p).unwrap();
+    BufReader::new(file).lines().into_iter().flatten().collect()
+}
