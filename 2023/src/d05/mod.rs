@@ -4,6 +4,7 @@ use std::{
     fs::File,
     io::{BufReader, Lines},
     path::Path,
+    thread::{self, ScopedJoinHandle},
 };
 
 use crate::util::get_lines;
@@ -40,10 +41,19 @@ fn get_seeds(s: &str) -> Vec<i64> {
         .collect()
 }
 
-fn p2(lines: Vec<String>) {}
+fn get_seeds2(s: &str) -> Vec<i64> {
+    let ranges: Vec<(i64, i64)> = get_seeds(s).chunks_exact(2).map(|c| (c[0], c[1])).collect();
+    let mut v: Vec<i64> = vec![];
 
-fn p1(lines: Vec<String>) {
-    let seeds = get_seeds(&lines[0]);
+    for r in ranges {
+        let mut a: Vec<i64> = (r.0..r.0 + r.1).collect();
+        v.append(&mut a);
+    }
+
+    v
+}
+
+fn p2(lines: Vec<String>) {
     let mut maps = get_maps();
     let mut i = 3;
     let mut map_i = 0;
@@ -70,6 +80,73 @@ fn p1(lines: Vec<String>) {
         map_i += 1;
     }
 
+    let ranges: Vec<(i64, i64)> = get_seeds(&lines[0])
+        .chunks_exact(2)
+        .map(|c| (c[0], c[1]))
+        .collect();
+
+    let maps2 = &maps;
+    let mut mins: Vec<i64> = vec![];
+
+    // NOTE: Efficient solution is updating the seed intervals, but dont have the time
+    thread::scope(|s| {
+        let mut ts: Vec<ScopedJoinHandle<'_, i64>> = vec![];
+        for r in ranges {
+            ts.push(s.spawn(move || {
+                let mut min_seed = i64::MAX;
+                for seed in r.0..r.0 + r.1 {
+                    let mut val = seed;
+
+                    for m in MAP_NAMES {
+                        for (k, v) in &maps2[m] {
+                            if val >= k.0 && val <= k.1 {
+                                val = v.0 + (val - k.0);
+                                break;
+                            }
+                        }
+                    }
+                    min_seed = min(min_seed, val);
+                }
+                min_seed
+            }));
+        }
+
+        for t in ts {
+            mins.push(t.join().unwrap());
+        }
+    });
+
+    println!("Part 2: {}", mins.iter().min().unwrap());
+}
+
+fn p1(lines: Vec<String>) {
+    let mut maps = get_maps();
+    let mut i = 3;
+    let mut map_i = 0;
+
+    while i < lines.len() {
+        let map_name = MAP_NAMES[map_i];
+        let m = maps.get_mut(map_name).unwrap();
+
+        while lines[i] != "" {
+            let (k, v, len) = line_instr(&lines[i]);
+
+            let range_left = (v, v + (len - 1));
+            let range_right = (k, k + (len - 1));
+
+            m.insert(range_left, range_right);
+
+            i += 1;
+            if i >= lines.len() {
+                break;
+            }
+        }
+
+        i += 2;
+        map_i += 1;
+    }
+
+    let seeds = get_seeds(&lines[0]);
     let mut min_seed = i64::MAX;
 
     for seed in seeds {
@@ -94,5 +171,5 @@ pub fn d05() {
     let input_file = Path::new("src/d05/in.txt");
 
     p1(get_lines(input_file));
-    // p2(read_lines(input_file).expect("Couldnt read lines of file"));
+    p2(get_lines(input_file));
 }
