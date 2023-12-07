@@ -8,8 +8,6 @@ use std::{
 
 use crate::util::get_lines;
 
-const HAND_SIZE: usize = 5;
-
 // NOTE: For part 1, J should be ordered between Q and T
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 enum CamelCard {
