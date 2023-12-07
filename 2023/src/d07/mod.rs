@@ -193,6 +193,6 @@ fn p1(lines: Vec<String>) {
 pub fn d07() {
     let input_file = Path::new("src/d07/in.txt");
 
-    // p1(get_lines(input_file));
+    p1(get_lines(input_file));
     p2(get_lines(input_file));
 }
