@@ -1,3 +1,4 @@
+// Rust version of the soltion by HyperNeutrino
 use std::{collections::HashMap, path::Path};
 
 use crate::util::get_lines;
