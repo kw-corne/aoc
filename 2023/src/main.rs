@@ -40,6 +40,9 @@ use d12::d12;
 mod d13;
 use d13::d13;
 
+mod d14;
+use d14::d14;
+
 fn main() {
     // println!("Day 1:");
     // d01();
@@ -77,6 +80,9 @@ fn main() {
     // println!("\nDay 12:");
     // d12();
 
-    println!("\nDay 13:");
-    d13();
+    // println!("\nDay 13:");
+    // d13();
+
+    println!("\nDay 14:");
+    d14();
 }
