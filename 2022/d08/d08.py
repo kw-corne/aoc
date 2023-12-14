@@ -1,6 +1,3 @@
-import sys
-
-
 def column(grid, i):
     return [row[i] for row in grid]
 
