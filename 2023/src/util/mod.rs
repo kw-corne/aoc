@@ -19,6 +19,16 @@ pub fn lines_to_2d_chars(lines: &Vec<String>) -> Vec<Vec<char>> {
     lines.iter().map(|s| s.chars().collect()).collect()
 }
 
+pub fn dump_grid(grid: &Vec<Vec<char>>) {
+    for row in grid {
+        for c in row {
+            print!("{}", c);
+        }
+        println!();
+    }
+    println!();
+}
+
 pub fn get_adj_chars(grid: &Vec<Vec<char>>, i: usize, j: usize, diag: bool) -> Vec<(char, i8, i8)> {
     let mut adjacent_chars: Vec<(char, i8, i8)> = Vec::new();
 
