@@ -1,4 +1,5 @@
 use anyhow::Result;
+use std::fmt::Display;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Lines};
 use std::path::Path;
@@ -19,7 +20,14 @@ pub fn lines_to_2d_chars(lines: &Vec<String>) -> Vec<Vec<char>> {
     lines.iter().map(|s| s.chars().collect()).collect()
 }
 
-pub fn dump_grid(grid: &Vec<Vec<char>>) {
+pub fn lines_to_2d_ints(lines: &Vec<String>) -> Vec<Vec<i32>> {
+    lines
+        .iter()
+        .map(|s| s.chars().map(|c| c.to_digit(10).unwrap() as i32).collect())
+        .collect()
+}
+
+pub fn dump_grid<T: Display>(grid: &Vec<Vec<T>>) {
     for row in grid {
         for c in row {
             print!("{}", c);
@@ -39,8 +47,13 @@ pub fn slice_col<T>(grid: &Vec<Vec<T>>, col: usize) -> Vec<&T> {
     s
 }
 
-pub fn get_adj_chars(grid: &Vec<Vec<char>>, i: usize, j: usize, diag: bool) -> Vec<(char, i8, i8)> {
-    let mut adjacent_chars: Vec<(char, i8, i8)> = Vec::new();
+pub fn get_adj_els<T: Copy>(
+    grid: &Vec<Vec<T>>,
+    i: usize,
+    j: usize,
+    diag: bool,
+) -> Vec<(T, i8, i8)> {
+    let mut adjacent_chars: Vec<(T, i8, i8)> = Vec::new();
 
     if i > 0 {
         adjacent_chars.push((grid[i - 1][j], -1, 0));

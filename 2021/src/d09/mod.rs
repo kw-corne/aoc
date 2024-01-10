@@ -3,7 +3,7 @@ use std::{
     path::Path,
 };
 
-use crate::util::{get_adj_chars, get_lines, lines_to_2d_chars};
+use crate::util::{get_adj_els, get_lines, lines_to_2d_chars};
 
 fn flood_fill(i: usize, j: usize, grid: &Vec<Vec<char>>) -> HashSet<(usize, usize)> {
     let mut basin: HashSet<(usize, usize)> = HashSet::new();
@@ -17,7 +17,7 @@ fn flood_fill(i: usize, j: usize, grid: &Vec<Vec<char>>) -> HashSet<(usize, usiz
             let pos: (isize, isize) = queue.pop_front().unwrap();
 
             let adjacent_chars: Vec<(char, i8, i8)> =
-                get_adj_chars(grid, pos.0 as usize, pos.1 as usize, false)
+                get_adj_els(grid, pos.0 as usize, pos.1 as usize, false)
                     .into_iter()
                     .filter(|&c| c.0 != '9')
                     .collect();
@@ -58,7 +58,7 @@ fn p1(lines: Vec<String>) {
 
     for (i, line) in grid.iter().enumerate() {
         for (j, n) in line.iter().enumerate() {
-            if get_adj_chars(&grid, i, j, false)
+            if get_adj_els(&grid, i, j, false)
                 .iter()
                 .all(|&cell| cell.0 > *n)
             {
