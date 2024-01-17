@@ -1,4 +1,5 @@
 use anyhow::Result;
+use std::collections::HashSet;
 use std::fmt::Display;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Lines};
@@ -30,6 +31,24 @@ pub fn lines_to_2d_ints(lines: &Vec<String>) -> Vec<Vec<i32>> {
 pub fn dump_grid<T: Display>(grid: &Vec<Vec<T>>) {
     for row in grid {
         for c in row {
+            print!("{}", c);
+        }
+        println!();
+    }
+    println!();
+}
+
+pub fn dump_hash_set_points(set: &HashSet<[usize; 2]>) {
+    let xylen = set.iter().fold([usize::MIN, usize::MIN], |acc, point| {
+        [acc[0].max(point[0]), acc[1].max(point[1])]
+    });
+
+    for i in 0..xylen[1] + 1 {
+        for j in 0..xylen[0] + 1 {
+            let c = match set.contains(&[j, i]) {
+                true => "#",
+                false => ".",
+            };
             print!("{}", c);
         }
         println!();
