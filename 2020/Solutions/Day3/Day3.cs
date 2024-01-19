@@ -68,7 +68,7 @@ class Day3
     public void solve()
     {
         var inputLines = AocUtil.GetLines("Solutions/Day3/in.txt");
-        // Part1(inputLines);
+        Part1(inputLines);
         Part2(inputLines);
     }
 }
