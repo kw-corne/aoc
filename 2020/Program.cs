@@ -11,7 +11,10 @@
         // var d3 = new Day3();
         // d3.solve();
 
-        var d4 = new Day4();
-        d4.solve();
+        // var d4 = new Day4();
+        // d4.solve();
+
+        var d5 = new Day5();
+        d5.solve();
     }
 }
