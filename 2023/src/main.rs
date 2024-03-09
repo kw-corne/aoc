@@ -64,6 +64,12 @@ use d20::d20;
 mod d21;
 use d21::d21;
 
+mod d22;
+use d22::d22;
+
+mod d23;
+use d23::d23;
+
 fn main() {
     // println!("Day 1:");
     // d01();
@@ -125,6 +131,12 @@ fn main() {
     // println!("\nDay 21:");
     // d21();
 
-    println!("\nDay 21:");
-    d21();
+    // println!("\nDay 21:");
+    // d21();
+
+    // println!("\nDay 22:");
+    // d22();
+
+    println!("\nDay 23:");
+    d23();
 }
