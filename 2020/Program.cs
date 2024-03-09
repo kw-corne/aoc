@@ -2,19 +2,13 @@
 {
     public static void Main(string[] args)
     {
-        // var d1 = new Day1();
-        // d1.solve();
-
-        // var d2 = new Day2();
-        // d2.solve();
-
-        // var d3 = new Day3();
-        // d3.solve();
-
-        // var d4 = new Day4();
-        // d4.solve();
-
-        var d5 = new Day5();
-        d5.solve();
+        // new Day1().solve();
+        // new Day2().solve();
+        // new Day3().solve();
+        // new Day4().solve();
+        // new Day5().solve();
+        // new Day6().solve();
+        // new Day7().solve();
+        Day8.solve();
     }
 }
