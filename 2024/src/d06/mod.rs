@@ -12,7 +12,7 @@ fn make_map(lines: &[String]) -> Vec<Vec<char>> {
     map
 }
 
-fn start_pos(map: &Vec<Vec<char>>) -> (i32, i32) {
+fn start_pos(map: &[Vec<char>]) -> (i32, i32) {
     for i in 0..map.len() {
         for j in 0..map[i].len() {
             if map[i][j] == '^' {
@@ -28,15 +28,19 @@ fn in_bounds(pos: (i32, i32), height: i32, width: i32) -> bool {
     pos.0 >= 0 && pos.0 < height && pos.1 >= 0 && pos.1 < width
 }
 
-fn p02(lines: Vec<String>) {
-    let map = make_map(&lines);
-    let mut pos = start_pos(&map);
-    let mut visited = HashSet::new();
-
-    let mut dir = (-1, 0);
+fn go_until_oob_or_cache(
+    mut pos: (i32, i32),
+    mut dir: (i32, i32),
+    map: &[Vec<char>],
+) -> (bool, Vec<((i32, i32), (i32, i32))>) {
+    let mut visited = vec![];
 
     loop {
-        visited.insert((pos, dir));
+        if visited.contains(&(pos, dir)) {
+            return (true, visited);
+        }
+        visited.push((pos, dir));
+
         let next_pos = (pos.0 + dir.0, pos.1 + dir.1);
 
         if !in_bounds(next_pos, map.len() as i32, map[0].len() as i32) {
@@ -52,54 +56,48 @@ fn p02(lines: Vec<String>) {
         }
     }
 
-    let mut sum = 0;
-    let mut lel = HashSet::new();
+    (false, visited)
+}
 
-    for seen in &visited {
-        let dright = (seen.1 .1, -seen.1 .0);
-        let next_pos = (seen.0 .0 + dright.0, seen.0 .1 + dright.1);
+fn p02(lines: Vec<String>) {
+    let mut map = make_map(&lines);
+    let pos = start_pos(&map);
+    let dir = (-1, 0);
+    let mut count = 0;
 
-        if !in_bounds(next_pos, map.len() as i32, map[0].len() as i32) {
-            break;
-        }
+    for i in 0..map.len() {
+        for j in 0..map[i].len() {
+            if map[i][j] != '#' {
+                map[i][j] = '#';
 
-        if visited.contains(&(next_pos, dright)) {
-            lel.insert(next_pos);
+                let looped = go_until_oob_or_cache(pos, dir, &map).0;
+                if looped {
+                    count += 1;
+                }
+
+                map[i][j] = '.';
+            }
         }
     }
-
-    dbg!(&lel);
-    println!("{}", lel.len());
+    println!("{}", count);
 }
 
 fn p01(lines: Vec<String>) {
     let map = make_map(&lines);
-    let mut pos = start_pos(&map);
-    let mut visited = HashSet::new();
+    let pos = start_pos(&map);
+    let dir = (-1, 0);
 
-    let mut dir = (-1, 0);
+    let visited = go_until_oob_or_cache(pos, dir, &map)
+        .1
+        .iter()
+        .map(|x| x.0)
+        .collect::<HashSet<_>>()
+        .len();
 
-    loop {
-        visited.insert(pos);
-        let next_pos = (pos.0 + dir.0, pos.1 + dir.1);
-
-        if !in_bounds(next_pos, map.len() as i32, map[0].len() as i32) {
-            break;
-        }
-
-        let on_next_pos = map[next_pos.0 as usize][next_pos.1 as usize];
-
-        match on_next_pos {
-            '#' => dir = (dir.1, -dir.0),
-            '.' | '^' => pos = next_pos,
-            _ => (),
-        }
-    }
-
-    println!("{}", visited.len());
+    println!("{}", visited);
 }
 
 pub fn d06() {
     p01(get_lines("src/d06/in.txt"));
-    p02(get_lines("src/d06/dbg.txt"));
+    p02(get_lines("src/d06/in.txt"));
 }
