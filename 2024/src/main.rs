@@ -1,4 +1,5 @@
 #![allow(dead_code, unused_imports)]
+#![allow(clippy::needless_range_loop)]
 mod util;
 
 mod d01;
@@ -22,6 +23,9 @@ use d06::d06;
 mod d07;
 use d07::d07;
 
+mod d08;
+use d08::d08;
+
 fn main() {
     //d01();
     // d02();
@@ -29,5 +33,6 @@ fn main() {
     // d04();
     // d05();
     // d06();
-    d07();
+    // d07();
+    d08();
 }
