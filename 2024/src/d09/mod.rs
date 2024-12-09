@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::util::get_lines;
 
 type Filesys = Vec<Option<i64>>;
@@ -38,8 +40,32 @@ fn next_gap(fs: &Filesys) -> Option<usize> {
     None
 }
 
-fn next_gap_of_size() -> Option<usize> {
-    todo!()
+fn next_gap_of_size(size: usize, fs: &Filesys) -> Option<usize> {
+    let mut i = 0;
+    let mut curr_gap_len;
+    let mut gap_start;
+
+    while i < fs.len() {
+        curr_gap_len = 0;
+
+        if fs[i].is_none() {
+            gap_start = i;
+            curr_gap_len += 1;
+            i += 1;
+
+            while i < fs.len() && fs[i].is_none() {
+                curr_gap_len += 1;
+                i += 1;
+            }
+
+            if curr_gap_len >= size && i != fs.len() {
+                return Some(gap_start);
+            }
+        }
+        i += 1;
+    }
+
+    None
 }
 
 fn checksum(fs: &Filesys) -> i64 {
@@ -54,23 +80,33 @@ fn checksum(fs: &Filesys) -> i64 {
 
 fn p2(lines: Vec<String>) {
     let mut fs = make_filesys(&lines[0]);
-    let mut empty_idx = next_gap(&fs);
+    let mut placed = HashSet::new();
 
-    let mut i = 0;
-    while i > 0 {
-        if fs[i].is_none() {
+    let mut i = fs.len() - 1;
+    while i != 0 {
+        if fs[i].is_none() || fs[i].is_some_and(|x| placed.contains(&x)) {
             i -= 1;
             continue;
         }
 
         let block_start = i;
-        let mut block_size = 1;
-        while fs[i].is_some_and(|x| x == fs[block_start].unwrap()) {
+        let mut block_size = 0;
+        while i != 0 && fs[i].is_some_and(|x| x == fs[block_start].unwrap()) {
             block_size += 1;
             i -= 1;
         }
 
-        i -= 1;
+        let gap = next_gap_of_size(block_size, &fs);
+        if let Some(g) = gap {
+            if g < block_start {
+                placed.insert(fs[block_start].unwrap());
+
+                for j in 0..block_size {
+                    fs[g + j] = fs[block_start - j];
+                    fs[block_start - j] = None;
+                }
+            }
+        }
     }
 
     println!("{}", checksum(&fs));
@@ -96,6 +132,6 @@ fn p1(lines: Vec<String>) {
 }
 
 pub fn d09() {
-    p1(get_lines("src/d09/dbg.txt"));
-    p2(get_lines("src/d09/dbg.txt"));
+    p1(get_lines("src/d09/in.txt"));
+    p2(get_lines("src/d09/in.txt"));
 }
