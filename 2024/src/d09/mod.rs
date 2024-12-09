@@ -80,11 +80,10 @@ fn checksum(fs: &Filesys) -> i64 {
 
 fn p2(lines: Vec<String>) {
     let mut fs = make_filesys(&lines[0]);
-    let mut placed = HashSet::new();
 
     let mut i = fs.len() - 1;
     while i != 0 {
-        if fs[i].is_none() || fs[i].is_some_and(|x| placed.contains(&x)) {
+        if fs[i].is_none() {
             i -= 1;
             continue;
         }
@@ -99,8 +98,6 @@ fn p2(lines: Vec<String>) {
         let gap = next_gap_of_size(block_size, &fs);
         if let Some(g) = gap {
             if g < block_start {
-                placed.insert(fs[block_start].unwrap());
-
                 for j in 0..block_size {
                     fs[g + j] = fs[block_start - j];
                     fs[block_start - j] = None;
