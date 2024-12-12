@@ -20,6 +20,10 @@ pub fn dump_grid(grid: &Vec<Vec<char>>) {
     println!();
 }
 
+pub fn in_bounds(pos: (i32, i32), width: i32, height: i32) -> bool {
+    pos.0 >= 0 && pos.0 < height && pos.1 >= 0 && pos.1 < width
+}
+
 pub fn get_adj_chars(grid: &Vec<Vec<char>>, i: usize, j: usize, diag: bool) -> Vec<(char, i8, i8)> {
     let mut adjacent_chars: Vec<(char, i8, i8)> = Vec::new();
 
