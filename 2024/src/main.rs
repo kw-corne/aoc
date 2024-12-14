@@ -2,9 +2,9 @@
 #![allow(clippy::needless_range_loop)]
 mod util;
 
-mod d13;
-use d13::d13;
+mod d14;
+use d14::d14;
 
 fn main() {
-    d13();
+    d14();
 }
