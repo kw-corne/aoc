@@ -3,9 +3,9 @@
 #![allow(clippy::type_complexity)]
 mod util;
 
-mod d15;
-use d15::d15;
+mod d17;
+use d17::d17;
 
 fn main() {
-    d15();
+    d17();
 }

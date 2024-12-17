@@ -32,9 +32,9 @@ impl Instr {
 
 #[derive(Debug)]
 struct Program {
-    ra: i32,
-    rb: i32,
-    rc: i32,
+    ra: i64,
+    rb: i64,
+    rc: i64,
     program: Vec<i32>,
     ip: usize,
 }
@@ -61,19 +61,19 @@ impl Program {
         }
     }
 
-    fn get_reg_value(s: &str) -> i32 {
+    fn get_reg_value(s: &str) -> i64 {
         s.split_ascii_whitespace()
             .last()
             .unwrap()
-            .parse::<i32>()
+            .parse::<i64>()
             .unwrap()
     }
 
-    fn run_instruction(&mut self) -> Option<i32> {
+    fn run_instruction(&mut self) -> Option<i64> {
         let opcode = self.program[self.ip];
-        let operand = self.program[self.ip + 1];
+        let operand = self.program[self.ip + 1] as i64;
         let combo = match operand {
-            0 | 1 | 2 | 3 => operand,
+            0..=3 => operand,
             4 => self.ra,
             5 => self.rb,
             6 => self.rc,
@@ -86,45 +86,70 @@ impl Program {
         let mut next_ip = self.ip + 2;
 
         match instr {
-            Instr::Adv => self.ra /= 2_i32.pow(combo as u32),
+            Instr::Adv => self.ra /= 2_i64.pow(combo as u32),
             Instr::Bxl => self.rb ^= operand,
             Instr::Bst => self.rb = combo % 8,
             Instr::Jnz if self.ra != 0 => next_ip = operand as usize,
             Instr::Jnz => (),
             Instr::Bxc => self.rb ^= self.rc,
             Instr::Out => output = Some(combo % 8),
-            Instr::Bdv => self.rb = self.ra / 2_i32.pow(combo as u32),
-            Instr::Cdv => self.rc = self.ra / 2_i32.pow(combo as u32),
+            Instr::Bdv => self.rb = self.ra / 2_i64.pow(combo as u32),
+            Instr::Cdv => self.rc = self.ra / 2_i64.pow(combo as u32),
         }
 
         self.ip = next_ip;
         output
     }
 
-    fn run(&mut self) -> Vec<i32> {
+    fn run(&mut self) -> Vec<String> {
         let mut output = vec![];
         while self.ip < self.program.len() {
             if let Some(v) = self.run_instruction() {
-                output.push(v);
+                output.push(v.to_string());
             }
         }
         output
     }
 }
 
-fn p02(lines: Vec<String>) {}
+fn ra_for_prog(lines: &[String], target: &[String]) -> i64 {
+    let mut curr_ra = match target.len() {
+        1 => 0,
+        _ => 8 * ra_for_prog(lines, &target[1..target.len()]),
+    };
+
+    loop {
+        let mut program = Program::new(lines);
+        program.ra = curr_ra;
+        if program.run() == *target {
+            return curr_ra;
+        }
+        curr_ra += 1;
+    }
+}
+
+fn p02(lines: Vec<String>) {
+    let program = Program::new(&lines);
+
+    let ra = ra_for_prog(
+        &lines,
+        &program
+            .program
+            .iter()
+            .cloned()
+            .map(|x| x.to_string())
+            .collect::<Vec<_>>(),
+    );
+    println!("{}", ra);
+}
 
 fn p01(lines: Vec<String>) {
     let mut program = Program::new(&lines);
-    let output = program
-        .run()
-        .iter()
-        .map(|x| x.to_string())
-        .collect::<Vec<_>>();
+    let output = program.run();
     println!("{}", output.join(","));
 }
 
 pub fn d17() {
-    p01(get_lines("src/d17/in.txt"));
-    p02(get_lines("src/d17/dbg.txt"));
+    // p01(get_lines("src/d17/in.txt"));
+    p02(get_lines("src/d17/in.txt"));
 }
